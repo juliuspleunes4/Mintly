@@ -94,7 +94,7 @@ async function handleUploadMetadata(req, res) {
       name: req.body.name,
       symbol: req.body.symbol,
       description: req.body.description || '',
-      network: req.body.network || 'devnet',
+      network: req.body.network || 'mainnet-beta',
       attributes: req.body.attributes ? JSON.parse(req.body.attributes) : []
     };
 

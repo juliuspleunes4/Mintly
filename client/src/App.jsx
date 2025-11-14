@@ -246,7 +246,7 @@ function App() {
       // Step 1: Pay service fee (0.1 SOL) to Mintly wallet
       console.log('💳 Step 1: Processing service fee payment...');
       const SERVICE_FEE_LAMPORTS = 0.1 * 1e9; // 0.1 SOL in lamports
-      const MINTLY_WALLET = new window.solanaWeb3.PublicKey('EC4PEYPmsvULrs6cPFGdLzx3hkNcxbmbtqnHFpTTBVnR'); // Replace with your actual wallet
+      const MINTLY_WALLET = new window.solanaWeb3.PublicKey('EC4PEYPmsvULrs6cPFGdLzx3hkNcxbmbtqnHFpTTBVnR');
       
       const connection = new window.solanaWeb3.Connection(
         window.solanaWeb3.clusterApiUrl(formData.network),
