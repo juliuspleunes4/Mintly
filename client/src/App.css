@@ -27,16 +27,20 @@ body {
 
 .app {
   min-height: 100vh;
-  padding: 20px;
   position: relative;
   isolation: isolate;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
   max-width: 800px;
   margin: 0 auto;
+  padding: 2rem;
   position: relative;
   z-index: 1;
+  padding-bottom: 4rem;
+  flex: 1;
 }
 
 /* Header */
