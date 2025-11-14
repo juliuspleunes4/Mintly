@@ -27,17 +27,22 @@ function App() {
 
   useEffect(() => {
     // Check which wallets are installed
+    console.log('🔍 Checking for installed wallets...');
     const wallets = [];
     if (window.solana && window.solana.isPhantom) {
+      console.log('✅ Phantom wallet detected');
       wallets.push({ name: 'Phantom', provider: window.solana, icon: '👻' });
     }
     if (window.solflare && window.solflare.isSolflare) {
+      console.log('✅ Solflare wallet detected');
       wallets.push({ name: 'Solflare', provider: window.solflare, icon: '🔥' });
     }
+    console.log(`📦 Found ${wallets.length} wallet(s):`, wallets.map(w => w.name).join(', '));
     setAvailableWallets(wallets);
   }, []);
 
   useEffect(() => {
+    console.log('💰 Setting estimated cost...');
     // Use fixed estimate to avoid RPC rate limiting
     // Based on typical mainnet costs:
     // - Mint account rent: ~0.00144 SOL
@@ -45,63 +50,75 @@ function App() {
     // - Token account rent: ~0.00203 SOL
     // - Transaction fees: ~0.00015 SOL
     setEstimatedCost('0.005');
+    console.log('✅ Estimated cost set to ~0.005 SOL');
   }, []);
 
   const openWalletModal = () => {
+    console.log('🔓 Opening wallet modal...');
     if (availableWallets.length === 0) {
+      console.warn('⚠️ No wallets detected');
       alert('No wallet detected!\n\nPlease install one of these wallets:\n\nPhantom: https://phantom.app\nSolflare: https://solflare.com');
       return;
     }
+    console.log('✅ Opening modal with', availableWallets.length, 'wallet(s)');
     setShowWalletModal(true);
   };
 
   const connectWallet = async (provider, walletName) => {
     try {
+      console.log(`🔌 Attempting to connect ${walletName}...`);
       setShowWalletModal(false);
       
       // Check if already connecting
       if (provider.isConnected) {
         const publicKey = provider.publicKey.toString();
+        console.log(`✅ ${walletName} already connected:`, publicKey);
         
         setWalletAdapter(provider);
         setWalletPublicKey(publicKey);
         setWalletBalance('-.----'); // Will update in background
         setIsWalletConnected(true);
         
+        console.log('📊 Fetching balance in background...');
         // Fetch balance in background (non-blocking)
         fetchBalance(provider.publicKey);
         
-        console.log(`${walletName} already connected:`, publicKey);
         return;
       }
       
+      console.log(`🔑 Requesting ${walletName} connection...`);
       const resp = await provider.connect();
       const publicKey = resp.publicKey.toString();
+      console.log(`✅ ${walletName} connected successfully:`, publicKey);
       
       setWalletAdapter(provider);
       setWalletPublicKey(publicKey);
       setWalletBalance('-.----'); // Will update in background
       setIsWalletConnected(true);
       
+      console.log('📊 Fetching balance in background...');
       // Fetch balance in background (non-blocking)
       fetchBalance(resp.publicKey);
       
-      console.log(`${walletName} connected:`, publicKey);
     } catch (error) {
-      console.error('Failed to connect wallet:', error);
+      console.error('❌ Failed to connect wallet:', error);
       
       // More specific error messages
       if (error.message?.includes('User rejected')) {
+        console.warn('⚠️ User rejected connection request');
         alert('Connection cancelled. Please try again and approve the connection in your wallet.');
       } else if (error.code === 4001) {
+        console.warn('⚠️ Connection rejected (code 4001)');
         alert('Connection rejected. Please try again.');
       } else {
+        console.error('❌ Connection error:', error.message || 'Unknown error');
         alert(`Failed to connect wallet: ${error.message || 'Unknown error'}`);
       }
     }
   };
 
   const fetchBalance = async (publicKey) => {
+    console.log('💰 Fetching balance for:', publicKey.toString());
     try {
       // Try multiple RPC endpoints in order
       const rpcEndpoints = [
@@ -111,22 +128,27 @@ function App() {
         window.solanaWeb3.clusterApiUrl('mainnet-beta')
       ];
       
-      for (const endpoint of rpcEndpoints) {
+      for (let i = 0; i < rpcEndpoints.length; i++) {
+        const endpoint = rpcEndpoints[i];
         try {
+          console.log(`🔗 Trying RPC endpoint ${i + 1}/${rpcEndpoints.length}:`, endpoint);
           const connection = new window.solanaWeb3.Connection(endpoint, 'confirmed');
           const balance = await connection.getBalance(publicKey);
-          setWalletBalance((balance / 1e9).toFixed(4));
+          const balanceSOL = (balance / 1e9).toFixed(4);
+          console.log(`✅ Balance fetched: ${balanceSOL} SOL (${balance} lamports)`);
+          setWalletBalance(balanceSOL);
           return; // Success, exit
         } catch (err) {
-          console.warn(`RPC endpoint ${endpoint} failed:`, err.message);
+          console.warn(`⚠️ RPC endpoint ${endpoint} failed:`, err.message);
           continue; // Try next endpoint
         }
       }
       
       // All endpoints failed
+      console.error('❌ All RPC endpoints failed to fetch balance');
       setWalletBalance('-.----');
     } catch (error) {
-      console.warn('Failed to fetch balance:', error);
+      console.error('❌ Failed to fetch balance:', error);
       setWalletBalance('-.----');
     }
   };
@@ -135,19 +157,25 @@ function App() {
     const file = e.target.files[0];
     if (!file) return;
 
+    console.log('🖼️ Image selected:', file.name, `(${(file.size / 1024).toFixed(2)} KB)`);
+
     if (!file.type.startsWith('image/')) {
+      console.warn('⚠️ Invalid file type:', file.type);
       alert('Please upload an image file (PNG or JPG)');
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
+      console.warn('⚠️ File too large:', (file.size / 1024 / 1024).toFixed(2), 'MB');
       alert('Image size must be less than 5MB');
       return;
     }
 
+    console.log('✅ Image validation passed, loading preview...');
     setImageFile(file);
     const reader = new FileReader();
     reader.onload = (e) => {
+      console.log('✅ Image preview loaded');
       setImagePreview(e.target.result);
     };
     reader.readAsDataURL(file);
@@ -174,21 +202,33 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('🚀 Form submitted');
 
     if (!isWalletConnected) {
+      console.warn('⚠️ Wallet not connected');
       alert('Please connect your wallet first');
       return;
     }
 
     if (!imageFile) {
+      console.warn('⚠️ No image selected');
       alert('Please upload a token image');
       return;
     }
 
+    console.log('✅ Validation passed, starting token creation process...');
+    console.log('📝 Token details:', {
+      name: formData.name,
+      symbol: formData.symbol,
+      decimals: formData.decimals,
+      mintAmount: formData.mintAmount,
+      network: formData.network
+    });
     setIsSubmitting(true);
 
     try {
       // Step 1: Upload image and metadata
+      console.log('📤 Step 1: Uploading image and metadata to Irys...');
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
       formDataToSend.append('symbol', formData.symbol);
@@ -197,6 +237,7 @@ function App() {
       formDataToSend.append('image', imageFile);
       
       const validAttributes = attributes.filter(attr => attr.trait_type && attr.value);
+      console.log('🏷️ Adding', validAttributes.length, 'attribute(s)');
       formDataToSend.append('attributes', JSON.stringify(validAttributes));
 
       const uploadResponse = await fetch('/api/mint-token', {
@@ -205,16 +246,20 @@ function App() {
       });
 
       if (!uploadResponse.ok) {
+        console.error('❌ Upload failed with status:', uploadResponse.status);
         throw new Error('Failed to upload metadata');
       }
 
       const { metadataUri } = await uploadResponse.json();
+      console.log('✅ Metadata uploaded to:', metadataUri);
 
       // Step 2: Create token mint (client-side with user's wallet)
+      console.log('🔗 Step 2: Connecting to Solana', formData.network);
       const connection = new window.solanaWeb3.Connection(
         window.solanaWeb3.clusterApiUrl(formData.network),
         'confirmed'
       );
+      console.log('✅ Connected to RPC');
 
       // Import SPL Token functions
       const { createMint, getOrCreateAssociatedTokenAccount, mintTo } = window.solanaWeb3.splToken;
@@ -224,7 +269,10 @@ function App() {
       
       // Create mint account
       const mintKeypair = window.solanaWeb3.Keypair.generate();
+      console.log('🔑 Generated mint keypair:', mintKeypair.publicKey.toString());
+      
       const lamports = await connection.getMinimumBalanceForRentExemption(82);
+      console.log('💰 Rent exemption:', (lamports / 1e9).toFixed(6), 'SOL');
       
       const createAccountIx = SystemProgram.createAccount({
         fromPubkey: walletAdapter.publicKey,
@@ -233,6 +281,7 @@ function App() {
         lamports,
         programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
       });
+      console.log('✅ Create account instruction built');
 
       // Initialize mint
       const initializeMintIx = window.solanaWeb3.splToken.createInitializeMintInstruction(
@@ -244,15 +293,26 @@ function App() {
 
       const transaction = new Transaction().add(createAccountIx, initializeMintIx);
       transaction.feePayer = walletAdapter.publicKey;
+      console.log('🔄 Getting recent blockhash...');
       transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+      console.log('✅ Blockhash obtained');
       
       // Sign with mint keypair
+      console.log('✍️ Partially signing with mint keypair...');
       transaction.partialSign(mintKeypair);
       
       // Request wallet signature
+      console.log('🔐 Requesting wallet signature...');
       const signed = await walletAdapter.signTransaction(transaction);
+      console.log('✅ Transaction signed by wallet');
+      
+      console.log('📡 Sending transaction...');
       const signature = await connection.sendRawTransaction(signed.serialize());
+      console.log('📨 Transaction sent, signature:', signature);
+      
+      console.log('⏳ Confirming transaction...');
       await connection.confirmTransaction(signature);
+      console.log('✅ Transaction confirmed!');
 
       console.log('✅ Token mint created:', mintKeypair.publicKey.toString());
 
@@ -279,36 +339,46 @@ function App() {
       console.log('✅ Metadata added');
 
       // Step 4: Mint tokens to user
+      console.log('🪙 Step 4: Creating associated token account...');
       const tokenAccount = await getOrCreateAssociatedTokenAccount(
         connection,
         walletAdapter,
         mintKeypair.publicKey,
         walletAdapter.publicKey
       );
+      console.log('✅ Token account:', tokenAccount.address.toString());
 
+      const mintAmountRaw = formData.mintAmount * Math.pow(10, formData.decimals);
+      console.log('💎 Minting', formData.mintAmount, 'tokens (', mintAmountRaw, 'raw amount)...');
       await mintTo(
         connection,
         walletAdapter,
         mintKeypair.publicKey,
         tokenAccount.address,
         walletAdapter.publicKey,
-        formData.mintAmount * Math.pow(10, formData.decimals)
+        mintAmountRaw
       );
 
-      console.log('✅ Tokens minted');
+      console.log('✅ Tokens minted successfully!');
 
+      const explorerUrl = `https://explorer.solana.com/address/${mintKeypair.publicKey.toString()}${
+        formData.network === 'mainnet-beta' ? '' : `?cluster=${formData.network}`
+      }`;
+      
+      console.log('🎉 Token creation complete!');
+      console.log('🔗 Explorer URL:', explorerUrl);
+      
       setResult({
         success: true,
         mintAddress: mintKeypair.publicKey.toString(),
         metadataUri: metadataUri,
         network: formData.network,
-        explorerUrl: `https://explorer.solana.com/address/${mintKeypair.publicKey.toString()}${
-          formData.network === 'mainnet-beta' ? '' : `?cluster=${formData.network}`
-        }`
+        explorerUrl: explorerUrl
       });
 
     } catch (error) {
-      console.error('Error creating token:', error);
+      console.error('❌ Error creating token:', error);
+      console.error('❌ Error stack:', error.stack);
       alert('Failed to create token: ' + error.message);
       setIsSubmitting(false);
     }
