@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Dither from './components/Dither';
+import Footer from './components/Footer';
 import './App.css';
 import { createCreateMetadataAccountV3Instruction } from '@metaplex-foundation/mpl-token-metadata';
 
@@ -288,7 +289,7 @@ function App() {
       // Step 3: Create token mint
       console.log('🪙 Step 3: Creating token mint...');
 
-      const { PublicKey, Transaction, SystemProgram, Keypair } = window.solanaWeb3;
+      const { PublicKey, Keypair } = window.solanaWeb3;
       const { createInitializeMintInstruction, TOKEN_PROGRAM_ID } = window.solanaWeb3.splToken;
       
       // Generate mint keypair
@@ -751,6 +752,7 @@ function App() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

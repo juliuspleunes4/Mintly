@@ -1,0 +1,100 @@
+.footer {
+  position: relative;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  border-top: 1px solid rgba(102, 51, 153, 0.3);
+  padding: 1rem 2rem;
+  margin-top: 4rem;
+  backdrop-filter: blur(10px);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-logo img {
+  width: 24px;
+  height: 24px;
+}
+
+.footer-logo span {
+  font-weight: 600;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.footer-link:hover {
+  color: rgba(102, 51, 153, 1);
+}
+
+.footer-separator {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.footer-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.beta-badge {
+  background: rgba(255, 165, 0, 0.2);
+  color: #ffa500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 165, 0, 0.4);
+}
+
+.warning-text {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer {
+    padding: 1rem;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .footer-warning {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* Add padding to App to account for fixed footer */
+.app {
+  padding-bottom: 80px;
+}

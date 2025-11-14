@@ -5,13 +5,22 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub](https://img.shields.io/badge/GitHub-juliuspleunes4-blue?logo=github)](https://github.com/juliuspleunes4/mintly-cli)
 [![Solana](https://img.shields.io/badge/Solana-SPL_Token-14F195?logo=solana)](https://solana.com)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js)](https://nodejs.org)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
 
 ---
 
 ## 🌐 About Mintly
 
-**Mintly** is a modern web application for creating Solana SPL tokens with custom images and metadata. No command-line knowledge required! Simply connect your wallet, fill in your token details, upload an image, and mint your token - all through an intuitive web interface.
+**Mintly** is a modern React web application for creating Solana SPL tokens with custom images and metadata. Features a stunning dithered wave shader background and seamless wallet integration. No command-line knowledge required!
+
+### ⚠️ BETA WARNING
+This application is in **early development and beta testing**. Use at your own risk. We are not responsible for:
+- Loss of SOL or tokens
+- Failed transactions
+- Token creation failures
+- Any blockchain-related issues
+
+All fees are **NON-REFUNDABLE**. Please read our [Terms of Service](#) and [Privacy Policy](#) before using.
 
 ### Perfect For:
 - 🎨 **Artists & Creators** - Launch your token with your artwork
@@ -19,30 +28,20 @@
 - 🎮 **Game Developers** - Mint in-game currencies and assets
 - 💡 **Web3 Enthusiasts** - Experiment with token creation on Solana
 
-### Two Ways to Use:
-
-1. **🌐 Web Application** (Recommended) - Beautiful UI with wallet integration
-2. **💻 CLI Tool** - Command-line interface for automation and scripting
-
-*Built on top of [Woody4618's create-solana-token-with-metadata](https://github.com/Woody4618/create-solana-token-with-metadata), enhanced with a full-stack web experience.*
+*Built on top of [Woody4618's create-solana-token-with-metadata](https://github.com/Woody4618/create-solana-token-with-metadata), enhanced with a full React web experience.*
 
 ## ✨ Why Choose Mintly?
 
 ### 🎯 User-Friendly Web Interface
 - ✨ **No coding required** - Intuitive form-based token creation
-- 🔐 **Secure wallet integration** - Connect Phantom or Solflare directly
+- 🔐 **Secure wallet integration** - Connect Phantom or Solflare directly (Mainnet only)
 - 📸 **Visual image upload** - Drag & drop with instant preview
-- 🎨 **Real-time validation** - Get feedback as you fill the form
-- 📊 **Live progress tracking** - See each step of token creation
+- 🎨 **Beautiful shader background** - Dithered wave effect with Three.js
+- 📊 **Live progress tracking** - See each step of token creation with emoji indicators
 - 🔗 **Instant results** - Direct links to Solana Explorer
-- 📱 **Works everywhere** - Responsive design for desktop and mobile
-- 💰 **Transparent costs** - Only pay standard Solana network fees
-
-### 🛠️ Also Includes CLI Tools
-For developers who prefer command-line workflows:
-- Automation and scripting support
-- Wallet.json integration
-- Batch token creation capabilities
+- 📱 **Responsive design** - Works on desktop and mobile
+- 💰 **Transparent pricing** - 0.2 SOL total (0.1 SOL service fee + ~0.1 SOL blockchain costs)
+- 📄 **Legal protection** - Comprehensive Terms of Service and Privacy Policy
 
 ---
 
@@ -54,26 +53,46 @@ For developers who prefer command-line workflows:
 git clone https://github.com/juliuspleunes4/mintly.git
 cd mintly
 npm install
+cd client
+npm install
 ```
 
-### Start the Web Server
+### Development Mode
 
 ```bash
-npm start
+# Terminal 1 - Start the backend API
+npm run dev
+
+# Terminal 2 - Start the React frontend
+cd client
+npm run dev
 ```
 
-Then open your browser and navigate to: **http://localhost:3000**
+Then open your browser and navigate to: **http://localhost:5173**
+
+### Production Deployment
+
+Deploy to Vercel (recommended):
+1. Set environment variable: `SOLANA_PRIVATE_KEY` (base58 or JSON array format)
+2. Deploy using `vercel` CLI or GitHub integration
+3. Backend runs as serverless function in `/api/`
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
 
 ### How to Create Your Token
 
 1. **🔌 Connect Your Wallet**
    - Click "Connect Wallet" button
-   - Approve the connection in your Phantom or Solflare wallet
+   - Choose Phantom or Solflare
+   - Approve the connection in your wallet
    - Your balance will be displayed automatically
+   - **Note: Mainnet only** - Application connects to Solana mainnet-beta
 
-2. **🌐 Choose Your Network**
-   - **Devnet** - Free testing environment (recommended for first-time users)
-   - **Mainnet** - Production environment for real tokens
+2. **💰 Understand the Costs**
+   - **Total: 0.2 SOL** per token creation
+   - **Service Fee: 0.1 SOL** - Goes to Mintly for hosting and Irys storage
+   - **Blockchain Costs: ~0.1 SOL** - Network fees for mint account, metadata, and transactions
+   - All fees are **NON-REFUNDABLE**
 
 3. **📝 Fill in Token Details**
    - **Name** - Your token's full name (e.g., "Awesome Token")
@@ -93,8 +112,12 @@ Then open your browser and navigate to: **http://localhost:3000**
 
 6. **🚀 Create Your Token**
    - Click "Create Token" button
-   - Approve the transaction in your wallet
-   - Watch the progress in real-time
+   - **Step 1**: Pay 0.1 SOL service fee
+   - **Step 2**: Metadata uploaded to Irys/Arweave
+   - **Step 3**: Create token mint account
+   - **Step 4**: Create metadata account
+   - **Step 5**: Mint tokens to your wallet
+   - Watch the progress with emoji indicators
 
 7. **🎉 View Your Token**
    - Get your mint address
@@ -104,9 +127,8 @@ Then open your browser and navigate to: **http://localhost:3000**
 ### What You'll Need
 
 - **Wallet Extension**: [Phantom](https://phantom.app) or [Solflare](https://solflare.com)
-- **SOL for Fees**: 
-  - Devnet: Free SOL from [faucet.solana.com](https://faucet.solana.com)
-  - Mainnet: ~0.01-0.02 SOL for token creation + ~0.001 SOL for metadata
+- **SOL Balance**: At least 0.2 SOL on **Mainnet** for token creation
+- **Stable Connection**: Token creation involves 5 blockchain transactions
 
 ---
 
@@ -186,9 +208,10 @@ npm run dev          # Start server with auto-reload
 
 For developers integrating Mintly into other applications:
 
-- `GET /` - Main web interface
-- `POST /api/mint-token` - Token creation endpoint (multipart/form-data)
-- `GET /api/health` - Server health check
+- `POST /api/mint-token` - Upload image and metadata to Irys (multipart/form-data)
+  - Accepts: `image` (file), `metadata` (JSON string)
+  - Returns: `{ metadataUri: string }`
+  - Requires: `SOLANA_PRIVATE_KEY` environment variable
 
 ---
 
@@ -196,20 +219,34 @@ For developers integrating Mintly into other applications:
 
 ```
 mintly/
-├── server.js           # 🌐 Express web server (main entry point)
-├── public/              # 🎨 Web interface
-│   ├── index.html      #    Main application page
-│   ├── css/
-│   │   └── style.css   #    Modern UI styles
-│   └── js/
-│       └── app.js      #    Client-side logic & wallet integration
-├── src/                # 🛠️ CLI tools (for advanced users)
+├── api/                     # 🔧 Vercel serverless functions
+│   └── mint-token.js       #    Backend API for Irys uploads
+├── client/                  # ⚛️ React frontend (Vite)
+│   ├── src/
+│   │   ├── App.jsx         #    Main application component
+│   │   ├── App.css         #    Application styles
+│   │   ├── main.jsx        #    React Router setup
+│   │   ├── components/
+│   │   │   ├── Dither.jsx  #    Three.js dithered shader background
+│   │   │   ├── Footer.jsx  #    Footer with legal links
+│   │   │   └── Footer.css  #    Footer styles
+│   │   └── pages/
+│   │       ├── PrivacyPolicy.jsx    #    Privacy policy page
+│   │       └── TermsOfService.jsx   #    Terms of service page
+│   ├── public/
+│   │   └── favicon.png     #    Mintly logo
+│   ├── package.json        #    Frontend dependencies
+│   └── vite.config.js      #    Vite configuration
+├── src/                     # 🛠️ Original CLI tools (legacy)
 │   ├── mint-token-with-metadata.js
 │   ├── upload-image-and-metadata.js
 │   ├── token-metadata.json
-│   └── image.png
-├── convert-key.js      # 🔑 Wallet key conversion utility
-├── package.json
+│   └── token-mint-address.json
+├── convert-key.js          # 🔑 Wallet key conversion utility
+├── vercel.json             # 🚀 Vercel deployment config
+├── DEPLOYMENT.md           # 📖 Deployment instructions
+├── .env.example            # 🔐 Environment variable template
+├── package.json            # 📦 Backend dependencies
 └── README.md
 ```
 
@@ -218,10 +255,19 @@ mintly/
 ## 🔒 Security & Privacy
 
 - **Your keys, your tokens** - The web app connects directly to YOUR browser wallet
-- **No key storage** - We never see or store your private keys
-- **Test first** - Always use devnet for testing before mainnet
+- **No data collection** - We don't collect, store, or process any personal information
+- **Decentralized storage** - Images and metadata stored on Irys/Arweave
 - **Open source** - All code is public and auditable
-- **Server wallet** - Only needed if self-hosting (for backend operations)
+- **Server wallet** - Backend uses funded wallet only for Irys uploads (you pay service fee)
+- **Mainnet only** - Application connects to Solana mainnet-beta
+- **Legal protection** - Comprehensive Terms of Service and Privacy Policy included
+
+### How Payment Works
+
+1. **You pay 0.1 SOL service fee** → Sent to service wallet: `EC4PEYPmsvULrs6cPFGdLzx3hkNcxbmbtqnHFpTTBVnR`
+2. **Backend uploads to Irys** → Uses server's funded wallet (your service fee covers this)
+3. **You pay blockchain costs** → Network fees for minting (sent directly to Solana network)
+4. **Tokens arrive in your wallet** → You own the mint authority and all tokens
 
 ## 🤝 Contributing
 
@@ -238,12 +284,36 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 This project is a fork of [create-solana-token-with-metadata](https://github.com/Woody4618/create-solana-token-with-metadata) by [Woody4618](https://github.com/Woody4618). Special thanks to the original creator for the foundation of this tool.
 
+## 🛠️ Technology Stack
+
+### Frontend
+- **React 19** - Modern UI framework
+- **Vite** - Fast build tool and dev server
+- **Three.js** - 3D graphics for dithered shader background
+- **@react-three/fiber** - React renderer for Three.js
+- **Solana Web3.js** - Blockchain interaction
+- **SPL Token** - Token program integration
+- **React Router** - Client-side routing
+
+### Backend
+- **Express** - API server (Vercel serverless)
+- **Metaplex UMI** - Solana framework
+- **Irys** - Decentralized storage on Arweave
+- **Multer** - File upload handling
+
+### Deployment
+- **Vercel** - Serverless hosting
+- **Arweave/Irys** - Permanent metadata storage
+- **Solana Mainnet** - Production blockchain network
+
+---
+
 ## 🔗 Links & Resources
 
-- **🌐 Live Demo:** [www.mintly.cc](https://www.mintly.cc)
-- **📦 GitHub:** [github.com/juliuspleunes4/mintly-cli](https://github.com/juliuspleunes4/mintly-cli)
-- **🐛 Report Issues:** [github.com/juliuspleunes4/mintly-cli/issues](https://github.com/juliuspleunes4/mintly-cli/issues)
+- **📦 GitHub:** [github.com/juliuspleunes4/mintly](https://github.com/juliuspleunes4/mintly)
+- **🐛 Report Issues:** [github.com/juliuspleunes4/mintly/issues](https://github.com/juliuspleunes4/mintly/issues)
 - **📖 Solana Docs:** [solana.com/docs](https://solana.com/docs)
+- **📖 Deployment Guide:** [DEPLOYMENT.md](DEPLOYMENT.md)
 - **👏 Original CLI:** [Woody4618's create-solana-token-with-metadata](https://github.com/Woody4618/create-solana-token-with-metadata)
 
 ---
@@ -252,8 +322,10 @@ This project is a fork of [create-solana-token-with-metadata](https://github.com
 
 ### Made with ❤️ by the Mintly team
 
-**Start creating your Solana tokens today - no coding required!**
+**⚠️ BETA SOFTWARE - Use at your own risk**
 
-[Get Started](http://localhost:3000) • [Documentation](https://github.com/juliuspleunes4/mintly-cli) • [Support](https://github.com/juliuspleunes4/mintly-cli/issues)
+**Start creating your Solana tokens today!**
+
+[Get Started](http://localhost:5173) • [Documentation](https://github.com/juliuspleunes4/mintly) • [Support](https://github.com/juliuspleunes4/mintly/issues)
 
 </div>
