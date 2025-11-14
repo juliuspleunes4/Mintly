@@ -17,6 +17,11 @@
   
   <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
   <script src="https://unpkg.com/@solana/spl-token@latest/lib/index.iife.min.js"></script>
+  <script>
+    // Polyfill for Node.js globals in browser
+    window.global = window;
+    window.process = { env: {} };
+  </script>
 </head>
 <body>
   <div id="root"></div>

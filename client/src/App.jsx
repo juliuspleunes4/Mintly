@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Dither from './components/Dither';
 import './App.css';
+import { createCreateMetadataAccountV3Instruction } from '@metaplex-foundation/mpl-token-metadata';
 
 function App() {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
@@ -43,14 +44,15 @@ function App() {
 
   useEffect(() => {
     console.log('💰 Setting estimated cost...');
-    // Use fixed estimate to avoid RPC rate limiting
-    // Based on typical mainnet costs:
+    // Based on typical mainnet costs from CLI version:
+    // - Irys storage (image + metadata): ~0.02-0.05 SOL
     // - Mint account rent: ~0.00144 SOL
     // - Metadata account rent: ~0.00153 SOL  
     // - Token account rent: ~0.00203 SOL
-    // - Transaction fees: ~0.00015 SOL
-    setEstimatedCost('0.005');
-    console.log('✅ Estimated cost set to ~0.005 SOL');
+    // - Transaction fees: ~0.00015 SOL per tx (3-4 transactions)
+    // Total: ~0.1 SOL recommended minimum
+    setEstimatedCost('0.1');
+    console.log('✅ Estimated cost set to ~0.1 SOL');
   }, []);
 
   const openWalletModal = () => {
@@ -227,7 +229,7 @@ function App() {
     setIsSubmitting(true);
 
     try {
-      // Step 1: Upload image and metadata
+      // Step 1: Upload image and metadata via backend
       console.log('📤 Step 1: Uploading image and metadata to Irys...');
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
@@ -253,73 +255,61 @@ function App() {
       const { metadataUri } = await uploadResponse.json();
       console.log('✅ Metadata uploaded to:', metadataUri);
 
-      // Step 2: Create token mint (client-side with user's wallet)
-      console.log('🔗 Step 2: Connecting to Solana', formData.network);
+      // Step 2: Create token mint
+      console.log('🪙 Step 2: Creating token mint...');
       const connection = new window.solanaWeb3.Connection(
         window.solanaWeb3.clusterApiUrl(formData.network),
         'confirmed'
       );
-      console.log('✅ Connected to RPC');
 
-      // Import SPL Token functions
-      const { createMint, getOrCreateAssociatedTokenAccount, mintTo } = window.solanaWeb3.splToken;
-      const { PublicKey, Transaction, SystemProgram } = window.solanaWeb3;
-
-      console.log('🪙 Creating token mint...');
+      const { PublicKey, Transaction, SystemProgram, Keypair } = window.solanaWeb3;
+      const { createInitializeMintInstruction, TOKEN_PROGRAM_ID } = window.solanaWeb3.splToken;
       
-      // Create mint account
-      const mintKeypair = window.solanaWeb3.Keypair.generate();
+      // Generate mint keypair
+      const mintKeypair = Keypair.generate();
       console.log('🔑 Generated mint keypair:', mintKeypair.publicKey.toString());
       
       const lamports = await connection.getMinimumBalanceForRentExemption(82);
-      console.log('💰 Rent exemption:', (lamports / 1e9).toFixed(6), 'SOL');
+      console.log('💰 Mint account rent:', (lamports / 1e9).toFixed(6), 'SOL');
       
       const createAccountIx = SystemProgram.createAccount({
         fromPubkey: walletAdapter.publicKey,
         newAccountPubkey: mintKeypair.publicKey,
         space: 82,
         lamports,
-        programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
+        programId: TOKEN_PROGRAM_ID,
       });
-      console.log('✅ Create account instruction built');
 
-      // Initialize mint
-      const initializeMintIx = window.solanaWeb3.splToken.createInitializeMintInstruction(
+      const initializeMintIx = createInitializeMintInstruction(
         mintKeypair.publicKey,
         formData.decimals,
         walletAdapter.publicKey,
-        walletAdapter.publicKey
+        walletAdapter.publicKey,
+        TOKEN_PROGRAM_ID
       );
 
       const transaction = new Transaction().add(createAccountIx, initializeMintIx);
       transaction.feePayer = walletAdapter.publicKey;
-      console.log('🔄 Getting recent blockhash...');
       transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
-      console.log('✅ Blockhash obtained');
       
-      // Sign with mint keypair
-      console.log('✍️ Partially signing with mint keypair...');
       transaction.partialSign(mintKeypair);
       
-      // Request wallet signature
       console.log('🔐 Requesting wallet signature...');
       const signed = await walletAdapter.signTransaction(transaction);
-      console.log('✅ Transaction signed by wallet');
       
       console.log('📡 Sending transaction...');
       const signature = await connection.sendRawTransaction(signed.serialize());
-      console.log('📨 Transaction sent, signature:', signature);
+      console.log('📨 Transaction signature:', signature);
       
       console.log('⏳ Confirming transaction...');
       await connection.confirmTransaction(signature);
-      console.log('✅ Transaction confirmed!');
+      console.log('✅ Token mint created!');
 
-      console.log('✅ Token mint created:', mintKeypair.publicKey.toString());
-
-      // Step 3: Add metadata
+      // Step 3: Add metadata account
+      console.log('📝 Step 3: Creating metadata account...');
       const TOKEN_METADATA_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s');
       
-      const [metadataPDA] = PublicKey.findProgramAddressSync(
+      const [metadataAccount] = PublicKey.findProgramAddressSync(
         [
           Buffer.from('metadata'),
           TOKEN_METADATA_PROGRAM_ID.toBuffer(),
@@ -327,19 +317,52 @@ function App() {
         ],
         TOKEN_METADATA_PROGRAM_ID
       );
+      
+      const createMetadataIx = createCreateMetadataAccountV3Instruction(
+        {
+          metadata: metadataAccount,
+          mint: mintKeypair.publicKey,
+          mintAuthority: walletAdapter.publicKey,
+          payer: walletAdapter.publicKey,
+          updateAuthority: walletAdapter.publicKey,
+        },
+        {
+          createMetadataAccountArgsV3: {
+            data: {
+              name: formData.name,
+              symbol: formData.symbol,
+              uri: metadataUri,
+              sellerFeeBasisPoints: 0,
+              creators: [
+                {
+                  address: walletAdapter.publicKey,
+                  verified: true,
+                  share: 100,
+                },
+              ],
+              collection: null,
+              uses: null,
+            },
+            isMutable: true,
+            collectionDetails: null,
+          },
+        }
+      );
 
-      // Create metadata instruction (simplified - you may need to add the full instruction)
-      const metadataTransaction = new Transaction();
+      const metadataTransaction = new Transaction().add(createMetadataIx);
       metadataTransaction.feePayer = walletAdapter.publicKey;
       metadataTransaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
       
       const signedMetadata = await walletAdapter.signTransaction(metadataTransaction);
-      await connection.sendRawTransaction(signedMetadata.serialize());
-
-      console.log('✅ Metadata added');
+      const metadataSignature = await connection.sendRawTransaction(signedMetadata.serialize());
+      await connection.confirmTransaction(metadataSignature);
+      
+      console.log('✅ Metadata account created!');
 
       // Step 4: Mint tokens to user
-      console.log('🪙 Step 4: Creating associated token account...');
+      console.log('💎 Step 4: Minting tokens to your wallet...');
+      const { getOrCreateAssociatedTokenAccount, mintTo } = window.solanaWeb3.splToken;
+      
       const tokenAccount = await getOrCreateAssociatedTokenAccount(
         connection,
         walletAdapter,
@@ -632,7 +655,7 @@ function App() {
                     <div className="cost-label">Estimated Cost:</div>
                     <div className="cost-value">~{estimatedCost} SOL</div>
                     <div className="cost-note">
-                      This includes network fees + rent for token accounts on Solana Mainnet
+                      Includes Irys storage, rent-exempt accounts, and transaction fees. Paid directly from your wallet.
                     </div>
                   </div>
                 )}

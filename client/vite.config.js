@@ -14,5 +14,23 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist'
+  },
+  define: {
+    global: 'globalThis',
+    'process.env': {}
+  },
+  resolve: {
+    alias: {
+      buffer: 'buffer',
+      stream: 'stream-browserify',
+      util: 'util'
+    }
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      define: {
+        global: 'globalThis'
+      }
+    }
   }
 });
