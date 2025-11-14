@@ -36,7 +36,14 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+
+// Serve React build in production, Vite handles dev mode
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client', 'dist')));
+} else {
+  // In development, Vite dev server runs separately on port 5173
+  console.log('Running in development mode - use "npm run dev" in client folder');
+}
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -316,6 +323,13 @@ app.post('/api/mint-token', upload.single('image'), async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+// Serve React app for all other routes in production
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+  });
+}
 
 // Start server
 app.listen(PORT, () => {

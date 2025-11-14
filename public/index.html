@@ -2,11 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="/assets/favicon.png" type="image/png">
+    <link rel="shortcut icon" href="/assets/favicon.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🪙 Mintly - Create Solana SPL Tokens</title>
+    <title>Mintly</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+    <!-- Animated Shader Background -->
+    <div id="shader-background" class="shader-background"></div>
+    
     <div class="container">
         <!-- Header -->
         <header class="header">
@@ -157,6 +162,9 @@
         </footer>
     </div>
 
+    <!-- Three.js for shader background -->
+    <script src="https://unpkg.com/three@0.159.0/build/three.min.js"></script>
+    <script src="/js/shader-background.js"></script>
     <script src="/js/app.js" type="module"></script>
 </body>
 </html>

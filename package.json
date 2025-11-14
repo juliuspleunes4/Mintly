@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
+    "server": "nodemon server.js",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "cd client && npm run build",
     "mint": "node src/mint-token-with-metadata.js",
     "upload": "node src/upload-image-and-metadata.js",
     "convert-key": "node convert-key.js"
@@ -24,16 +27,25 @@
     "@metaplex-foundation/umi": "^1.2.0",
     "@metaplex-foundation/umi-bundle-defaults": "^1.2.0",
     "@metaplex-foundation/umi-uploader-irys": "^1.2.0",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.0",
+    "@react-three/postprocessing": "^3.0.4",
     "@solana-developers/helpers": "^2.8.1",
     "@solana/spl-token": "^0.4.13",
     "@solana/web3.js": "^1.87.6",
     "bs58": "^6.0.0",
-    "express": "^4.18.2",
     "cors": "^2.8.5",
-    "multer": "^1.4.5-lts.1"
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "postprocessing": "^6.38.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "^0.181.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@vitejs/plugin-react": "^5.1.1",
+    "nodemon": "^3.0.1",
+    "vite": "^7.2.2"
   },
   "keywords": [
     "solana",
