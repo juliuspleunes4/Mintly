@@ -1,12 +1,21 @@
 {
-  "name": "create-solana-token",
+  "name": "mintly-cli",
   "version": "1.0.0",
-  "description": "A script to mint SPL tokens with metadata on Solana",
+  "description": "Create Solana SPL tokens with metadata - Fee-free & open source CLI tool",
   "main": "src/mint-token-with-metadata.js",
   "type": "module",
   "scripts": {
     "mint": "node src/mint-token-with-metadata.js",
-    "upload-image-and-metadata": "node src/upload-image-and-metadata.js",
+    "upload": "node src/upload-image-and-metadata.js",
+    "convert-key": "node convert-key.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juliuspleunes4/mintly-cli.git"
+  },
+  "homepage": "https://www.mintly.cc",
+  "bugs": {
+    "url": "https://github.com/juliuspleunes4/mintly-cli/issues"
   },
   "dependencies": {
     "@metaplex-foundation/mpl-token-metadata": "^2.13.0",
@@ -15,7 +24,8 @@
     "@metaplex-foundation/umi-uploader-irys": "^1.2.0",
     "@solana-developers/helpers": "^2.8.1",
     "@solana/spl-token": "^0.4.13",
-    "@solana/web3.js": "^1.87.6"
+    "@solana/web3.js": "^1.87.6",
+    "bs58": "^6.0.0"
   },
   "keywords": [
     "solana",
@@ -24,8 +34,11 @@
     "cryptocurrency",
     "metadata",
     "metaplex",
-    "umi"
+    "umi",
+    "mintly",
+    "token-creation",
+    "web3"
   ],
-  "author": "Jonas Hahn",
+  "author": "Julius Pleunes",
   "license": "MIT"
 }

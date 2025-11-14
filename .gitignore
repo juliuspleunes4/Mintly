@@ -44,3 +44,7 @@ next-env.d.ts
 /anchor/target/*
 !/anchor/target/idl/
 !/anchor/target/types/
+
+# Mintly - ignore sensitive wallet and token files
+src/wallet.json
+src/token-mint-address.json

@@ -1,19 +1,19 @@
 {
-  "name": "Dishes Token",
-  "symbol": "DISH",
-  "description": "Reward tokens for completing household chores like unloading the dishwasher. Each token represents a completed task and can be collected, traded, or used as proof of contribution to household duties.",
-  "decimals": 6,
-  "mintAmount": 1000,
+  "name": "Example",
+  "symbol": "EXA",
+  "description": "Official example coin of this project.",
+  "decimals": 9,
+  "mintAmount": 100000000000000,
   "network": "mainnet-beta",
   "image": "Will be replaced automatically",
   "attributes": [
     {
       "trait_type": "Category",
-      "value": "Household Chores"
+      "value": "Example Token"
     },
     {
-      "trait_type": "Task Type",
-      "value": "Dishwasher Unloading"
+      "trait_type": "Type",
+      "value": "Meme Coin"
     }
   ]
 }
