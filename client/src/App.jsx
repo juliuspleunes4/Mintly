@@ -38,40 +38,14 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Estimate transaction cost
-    const estimateCost = async () => {
-      try {
-        const connection = new window.solanaWeb3.Connection(
-          window.solanaWeb3.clusterApiUrl(formData.network),
-          'confirmed'
-        );
-        
-        // Get rent exemption for mint account (82 bytes)
-        const mintRent = await connection.getMinimumBalanceForRentExemption(82);
-        
-        // Estimate transaction fees (typically 5000 lamports per signature, ~3 signatures)
-        const estimatedFees = 5000 * 3;
-        
-        // Metadata account rent (~679 bytes)
-        const metadataRent = await connection.getMinimumBalanceForRentExemption(679);
-        
-        // Token account rent (~165 bytes)
-        const tokenAccountRent = await connection.getMinimumBalanceForRentExemption(165);
-        
-        const totalLamports = mintRent + estimatedFees + metadataRent + tokenAccountRent;
-        const totalSol = totalLamports / 1e9;
-        
-        setEstimatedCost(totalSol.toFixed(6));
-      } catch (error) {
-        console.error('Failed to estimate cost:', error);
-        setEstimatedCost('0.005'); // Fallback estimate
-      }
-    };
-
-    if (formData.network) {
-      estimateCost();
-    }
-  }, [formData.network]);
+    // Use fixed estimate to avoid RPC rate limiting
+    // Based on typical mainnet costs:
+    // - Mint account rent: ~0.00144 SOL
+    // - Metadata account rent: ~0.00153 SOL  
+    // - Token account rent: ~0.00203 SOL
+    // - Transaction fees: ~0.00015 SOL
+    setEstimatedCost('0.005');
+  }, []);
 
   const openWalletModal = () => {
     if (availableWallets.length === 0) {
@@ -85,25 +59,75 @@ function App() {
     try {
       setShowWalletModal(false);
       
+      // Check if already connecting
+      if (provider.isConnected) {
+        const publicKey = provider.publicKey.toString();
+        
+        setWalletAdapter(provider);
+        setWalletPublicKey(publicKey);
+        setWalletBalance('-.----'); // Will update in background
+        setIsWalletConnected(true);
+        
+        // Fetch balance in background (non-blocking)
+        fetchBalance(provider.publicKey);
+        
+        console.log(`${walletName} already connected:`, publicKey);
+        return;
+      }
+      
       const resp = await provider.connect();
       const publicKey = resp.publicKey.toString();
       
-      // Get balance
-      const connection = new window.solanaWeb3.Connection(
-        window.solanaWeb3.clusterApiUrl('devnet'),
-        'confirmed'
-      );
-      const balance = await connection.getBalance(resp.publicKey);
-      
       setWalletAdapter(provider);
       setWalletPublicKey(publicKey);
-      setWalletBalance((balance / 1e9).toFixed(4));
+      setWalletBalance('-.----'); // Will update in background
       setIsWalletConnected(true);
+      
+      // Fetch balance in background (non-blocking)
+      fetchBalance(resp.publicKey);
       
       console.log(`${walletName} connected:`, publicKey);
     } catch (error) {
       console.error('Failed to connect wallet:', error);
-      alert('Failed to connect wallet. Please try again.');
+      
+      // More specific error messages
+      if (error.message?.includes('User rejected')) {
+        alert('Connection cancelled. Please try again and approve the connection in your wallet.');
+      } else if (error.code === 4001) {
+        alert('Connection rejected. Please try again.');
+      } else {
+        alert(`Failed to connect wallet: ${error.message || 'Unknown error'}`);
+      }
+    }
+  };
+
+  const fetchBalance = async (publicKey) => {
+    try {
+      // Try multiple RPC endpoints in order
+      const rpcEndpoints = [
+        'https://solana-mainnet.g.alchemy.com/v2/demo',
+        'https://rpc.ankr.com/solana',
+        'https://solana-api.projectserum.com',
+        window.solanaWeb3.clusterApiUrl('mainnet-beta')
+      ];
+      
+      for (const endpoint of rpcEndpoints) {
+        try {
+          const connection = new window.solanaWeb3.Connection(endpoint, 'confirmed');
+          const balance = await connection.getBalance(publicKey);
+          setWalletBalance((balance / 1e9).toFixed(4));
+          return; // Success, exit
+        } catch (err) {
+          console.warn(`RPC endpoint ${endpoint} failed:`, err.message);
+          continue; // Try next endpoint
+        }
+      }
+      
+      // All endpoints failed
+      setWalletBalance('-.----');
+    } catch (error) {
+      console.warn('Failed to fetch balance:', error);
+      setWalletBalance('-.----');
     }
   };
 
