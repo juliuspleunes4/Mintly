@@ -1,0 +1,3 @@
+# Override GitHub language statistics to show only JavaScript
+*.html linguist-vendored
+*.css linguist-vendored
