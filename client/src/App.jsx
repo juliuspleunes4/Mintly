@@ -230,6 +230,19 @@ function App() {
     setIsSubmitting(true);
 
     try {
+      // Check if user has enough SOL
+      const minRequiredSOL = 0.2;
+      const currentBalance = parseFloat(walletBalance);
+      
+      if (walletBalance === 'Unable to fetch' || walletBalance === '-.----') {
+        console.warn('⚠️ Could not verify balance, proceeding anyway...');
+      } else if (currentBalance < minRequiredSOL) {
+        console.error('❌ Insufficient balance:', currentBalance, 'SOL (need', minRequiredSOL, 'SOL)');
+        alert(`Insufficient balance!\n\nYou have: ${currentBalance} SOL\nRequired: ${minRequiredSOL} SOL\n\nPlease add more SOL to your wallet to create tokens.`);
+        setIsSubmitting(false);
+        return;
+      }
+      
       // Step 1: Pay service fee (0.1 SOL) to Mintly wallet
       console.log('💳 Step 1: Processing service fee payment...');
       const SERVICE_FEE_LAMPORTS = 0.1 * 1e9; // 0.1 SOL in lamports
@@ -429,7 +442,20 @@ function App() {
     } catch (error) {
       console.error('❌ Error creating token:', error);
       console.error('❌ Error stack:', error.stack);
-      alert('Failed to create token: ' + error.message);
+      
+      // Better error messages
+      let errorMessage = 'Failed to create token: ';
+      if (error.message?.includes('insufficient funds') || error.message?.includes('Attempt to debit')) {
+        errorMessage = 'Insufficient SOL balance! You need at least 0.2 SOL to create tokens (0.1 SOL service fee + ~0.1 SOL blockchain costs).';
+      } else if (error.message?.includes('User rejected')) {
+        errorMessage = 'Transaction rejected. Please approve the transaction in your wallet to continue.';
+      } else if (error.message?.includes('Failed to upload')) {
+        errorMessage = 'Failed to upload image and metadata. Please try again or contact support.';
+      } else {
+        errorMessage += error.message;
+      }
+      
+      alert(errorMessage);
       setIsSubmitting(false);
     }
   };
