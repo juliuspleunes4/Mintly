@@ -123,19 +123,18 @@ function App() {
   const fetchBalance = async (publicKey) => {
     console.log('💰 Fetching balance for:', publicKey.toString());
     try {
-      // Try multiple RPC endpoints in order (free public endpoints)
+      // Try multiple RPC endpoints in order
       const rpcEndpoints = [
-        'https://api.mainnet-beta.solana.com',
-        'https://solana-mainnet.rpc.extrnode.com',
-        'https://mainnet.helius-rpc.com/?api-key=public',
-        'https://solana.public-rpc.com',
-        'https://rpc.solanatracker.io'
+        'https://mainnet.helius-rpc.com/?api-key=c3a2e11d-99a7-4d2c-b32c-eff27c5e0b76',
+        'https://rpc.ankr.com/solana/c3a2e11d99a74d2cb32ceff27c5e0b76',
+        'https://solana-rpc.publicnode.com',
+        'https://go.getblock.io/aefd01aa07c2430aab272bd4bb43ab59'
       ];
       
       for (let i = 0; i < rpcEndpoints.length; i++) {
         const endpoint = rpcEndpoints[i];
         try {
-          console.log(`🔗 Trying RPC endpoint ${i + 1}/${rpcEndpoints.length}:`, endpoint);
+          console.log(`🔗 Trying RPC endpoint ${i + 1}/${rpcEndpoints.length}`);
           const connection = new window.solanaWeb3.Connection(endpoint, 'confirmed');
           const balance = await connection.getBalance(publicKey);
           const balanceSOL = (balance / 1e9).toFixed(4);
@@ -143,17 +142,17 @@ function App() {
           setWalletBalance(balanceSOL);
           return; // Success, exit
         } catch (err) {
-          console.warn(`⚠️ RPC endpoint ${endpoint} failed:`, err.message);
+          console.warn(`⚠️ RPC endpoint failed:`, err.message);
           continue; // Try next endpoint
         }
       }
       
-      // All endpoints failed
-      console.error('❌ All RPC endpoints failed to fetch balance');
-      setWalletBalance('-.----');
+      // All endpoints failed - not critical, user can still proceed
+      console.warn('⚠️ Could not fetch balance (RPC issue), but you can still create tokens');
+      setWalletBalance('Unable to fetch');
     } catch (error) {
-      console.error('❌ Failed to fetch balance:', error);
-      setWalletBalance('-.----');
+      console.warn('⚠️ Balance fetch failed:', error.message);
+      setWalletBalance('Unable to fetch');
     }
   };
 
