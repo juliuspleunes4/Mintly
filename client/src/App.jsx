@@ -44,15 +44,15 @@ function App() {
 
   useEffect(() => {
     console.log('💰 Setting estimated cost...');
-    // Based on typical mainnet costs from CLI version:
-    // - Irys storage (image + metadata): ~0.02-0.05 SOL
-    // - Mint account rent: ~0.00144 SOL
-    // - Metadata account rent: ~0.00153 SOL  
-    // - Token account rent: ~0.00203 SOL
-    // - Transaction fees: ~0.00015 SOL per tx (3-4 transactions)
-    // Total: ~0.1 SOL recommended minimum
-    setEstimatedCost('0.1');
-    console.log('✅ Estimated cost set to ~0.1 SOL');
+    // Service fee: 0.1 SOL
+    // Irys storage (image + metadata): ~0.02-0.05 SOL (paid from our wallet)
+    // Mint account rent: ~0.00144 SOL
+    // Metadata account rent: ~0.00153 SOL  
+    // Token account rent: ~0.00203 SOL
+    // Transaction fees: ~0.00015 SOL per tx (3-4 transactions)
+    // Total: 0.2 SOL (0.1 service fee + 0.1 blockchain costs)
+    setEstimatedCost('0.2');
+    console.log('✅ Estimated cost set to 0.2 SOL (0.1 service fee + 0.1 blockchain costs)');
   }, []);
 
   const openWalletModal = () => {
@@ -229,8 +229,38 @@ function App() {
     setIsSubmitting(true);
 
     try {
-      // Step 1: Upload image and metadata via backend
-      console.log('📤 Step 1: Uploading image and metadata to Irys...');
+      // Step 1: Pay service fee (0.1 SOL) to Mintly wallet
+      console.log('💳 Step 1: Processing service fee payment...');
+      const SERVICE_FEE_LAMPORTS = 0.1 * 1e9; // 0.1 SOL in lamports
+      const MINTLY_WALLET = new window.solanaWeb3.PublicKey('EC4PEYPmsvULrs6cPFGdLzx3hkNcxbmbtqnHFpTTBVnR'); // Replace with your actual wallet
+      
+      const connection = new window.solanaWeb3.Connection(
+        window.solanaWeb3.clusterApiUrl(formData.network),
+        'confirmed'
+      );
+      
+      console.log('💰 Sending 0.1 SOL service fee to Mintly...');
+      
+      const paymentTransaction = new window.solanaWeb3.Transaction().add(
+        window.solanaWeb3.SystemProgram.transfer({
+          fromPubkey: walletAdapter.publicKey,
+          toPubkey: MINTLY_WALLET,
+          lamports: SERVICE_FEE_LAMPORTS,
+        })
+      );
+      
+      paymentTransaction.feePayer = walletAdapter.publicKey;
+      paymentTransaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+      
+      const signedPayment = await walletAdapter.signTransaction(paymentTransaction);
+      const paymentSignature = await connection.sendRawTransaction(signedPayment.serialize());
+      
+      console.log('⏳ Confirming payment transaction...');
+      await connection.confirmTransaction(paymentSignature);
+      console.log('✅ Service fee payment confirmed:', paymentSignature);
+
+      // Step 2: Upload image and metadata via backend
+      console.log('📤 Step 2: Uploading image and metadata to Irys...');
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
       formDataToSend.append('symbol', formData.symbol);
@@ -255,12 +285,8 @@ function App() {
       const { metadataUri } = await uploadResponse.json();
       console.log('✅ Metadata uploaded to:', metadataUri);
 
-      // Step 2: Create token mint
-      console.log('🪙 Step 2: Creating token mint...');
-      const connection = new window.solanaWeb3.Connection(
-        window.solanaWeb3.clusterApiUrl(formData.network),
-        'confirmed'
-      );
+      // Step 3: Create token mint
+      console.log('🪙 Step 3: Creating token mint...');
 
       const { PublicKey, Transaction, SystemProgram, Keypair } = window.solanaWeb3;
       const { createInitializeMintInstruction, TOKEN_PROGRAM_ID } = window.solanaWeb3.splToken;
@@ -305,8 +331,8 @@ function App() {
       await connection.confirmTransaction(signature);
       console.log('✅ Token mint created!');
 
-      // Step 3: Add metadata account
-      console.log('📝 Step 3: Creating metadata account...');
+      // Step 4: Add metadata account
+      console.log('📝 Step 4: Creating metadata account...');
       const TOKEN_METADATA_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s');
       
       const [metadataAccount] = PublicKey.findProgramAddressSync(
@@ -359,8 +385,8 @@ function App() {
       
       console.log('✅ Metadata account created!');
 
-      // Step 4: Mint tokens to user
-      console.log('💎 Step 4: Minting tokens to your wallet...');
+      // Step 5: Mint tokens to user
+      console.log('💎 Step 5: Minting tokens to your wallet...');
       const { getOrCreateAssociatedTokenAccount, mintTo } = window.solanaWeb3.splToken;
       
       const tokenAccount = await getOrCreateAssociatedTokenAccount(
@@ -655,7 +681,7 @@ function App() {
                     <div className="cost-label">Estimated Cost:</div>
                     <div className="cost-value">~{estimatedCost} SOL</div>
                     <div className="cost-note">
-                      Includes Irys storage, rent-exempt accounts, and transaction fees. Paid directly from your wallet.
+                      Includes 0.1 SOL service fee + blockchain costs (storage, rent-exempt accounts, transaction fees)
                     </div>
                   </div>
                 )}

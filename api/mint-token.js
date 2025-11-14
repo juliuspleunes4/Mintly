@@ -2,6 +2,8 @@ import multer from 'multer';
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import {
   createGenericFile,
+  createSignerFromKeypair,
+  signerIdentity,
 } from "@metaplex-foundation/umi";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import { clusterApiUrl } from "@solana/web3.js";
@@ -12,14 +14,36 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-// Upload image and metadata to Irys (free storage tier)
+// Upload image and metadata to Irys using funded Mintly wallet
 async function uploadImageAndMetadata(imageBuffer, imageName, metadata) {
   try {
-    // Use public Irys node for free uploads (no wallet needed)
+    // Get private key from environment variable
+    const privateKeyString = process.env.SOLANA_PRIVATE_KEY;
+    if (!privateKeyString) {
+      throw new Error('SOLANA_PRIVATE_KEY environment variable not set');
+    }
+
+    // Parse private key (expecting base58 or JSON array format)
+    let secretKey;
+    try {
+      // Try parsing as JSON array first
+      secretKey = new Uint8Array(JSON.parse(privateKeyString));
+    } catch {
+      // If that fails, try base58
+      const bs58 = await import('bs58');
+      secretKey = bs58.default.decode(privateKeyString);
+    }
+
     const umi = createUmi(clusterApiUrl(metadata.network));
-    umi.use(irysUploader({
-      address: 'https://node2.irys.xyz'
-    }));
+    
+    // Create keypair from secret key
+    const keypair = umi.eddsa.createKeypairFromSecretKey(secretKey);
+    const signer = createSignerFromKeypair(umi, keypair);
+    
+    umi.use(signerIdentity(signer));
+    umi.use(irysUploader());
+    
+    console.log('🔑 Using Mintly wallet for Irys uploads:', signer.publicKey);
 
     // Convert image to base64 for free upload
     const imageBase64 = imageBuffer.toString('base64');
