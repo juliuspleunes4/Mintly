@@ -467,7 +467,7 @@ function App() {
       description: '',
       decimals: 9,
       mintAmount: 1000000,
-      network: 'devnet'
+      network: 'mainnet-beta'
     });
     setImageFile(null);
     setImagePreview('');
@@ -593,7 +593,7 @@ function App() {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Decimals</label>
+                    <label>Decimals *</label>
                     <input
                       type="number"
                       value={formData.decimals}
@@ -606,7 +606,7 @@ function App() {
                   </div>
 
                   <div className="form-group">
-                    <label>Initial Supply</label>
+                    <label>Initial Supply *</label>
                     <input
                       type="number"
                       value={formData.mintAmount}
