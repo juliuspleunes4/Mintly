@@ -1,6 +1,6 @@
-# 🪙 Mintly - Web App & CLI
+# 🪙 Mintly
 
-### Create Solana SPL Tokens with Metadata - Now with a Web Interface!
+### Create Solana SPL Tokens with a Beautiful Web Interface
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub](https://img.shields.io/badge/GitHub-juliuspleunes4-blue?logo=github)](https://github.com/juliuspleunes4/mintly-cli)
@@ -9,49 +9,50 @@
 
 ---
 
-## 🎉 What's New in v2.0
+## 🌐 About Mintly
 
-**Mintly is now a full-featured web application!** You can now create Solana SPL tokens with a beautiful, user-friendly web interface - no command line required!
+**Mintly** is a modern web application for creating Solana SPL tokens with custom images and metadata. No command-line knowledge required! Simply connect your wallet, fill in your token details, upload an image, and mint your token - all through an intuitive web interface.
 
-### Two Ways to Use Mintly:
+### Perfect For:
+- 🎨 **Artists & Creators** - Launch your token with your artwork
+- 🚀 **Project Founders** - Create tokens for your community
+- 🎮 **Game Developers** - Mint in-game currencies and assets
+- 💡 **Web3 Enthusiasts** - Experiment with token creation on Solana
 
-1. **🌐 Web Interface** - Modern, intuitive UI with wallet connection (Phantom/Solflare)
-2. **💻 CLI Version** - Original command-line tool for developers
+### Two Ways to Use:
+
+1. **🌐 Web Application** (Recommended) - Beautiful UI with wallet integration
+2. **💻 CLI Tool** - Command-line interface for automation and scripting
+
+*Built on top of [Woody4618's create-solana-token-with-metadata](https://github.com/Woody4618/create-solana-token-with-metadata), enhanced with a full-stack web experience.*
+
+## ✨ Why Choose Mintly?
+
+### 🎯 User-Friendly Web Interface
+- ✨ **No coding required** - Intuitive form-based token creation
+- 🔐 **Secure wallet integration** - Connect Phantom or Solflare directly
+- 📸 **Visual image upload** - Drag & drop with instant preview
+- 🎨 **Real-time validation** - Get feedback as you fill the form
+- 📊 **Live progress tracking** - See each step of token creation
+- 🔗 **Instant results** - Direct links to Solana Explorer
+- 📱 **Works everywhere** - Responsive design for desktop and mobile
+- 💰 **Transparent costs** - Only pay standard Solana network fees
+
+### 🛠️ Also Includes CLI Tools
+For developers who prefer command-line workflows:
+- Automation and scripting support
+- Wallet.json integration
+- Batch token creation capabilities
 
 ---
 
-## 📖 About
-
-**Mintly** is a tool for creating Solana SPL tokens with custom images and metadata. This is a fork of [Woody4618's create-solana-token-with-metadata](https://github.com/Woody4618/create-solana-token-with-metadata) project, enhanced with a full web interface and additional features.
-
-## ✨ Features
-
-### Web Version
-- ✨ Modern, responsive UI
-- 🔐 Wallet integration (Phantom/Solflare)
-- 📸 Drag & drop image upload with preview
-- 🎨 Real-time form validation
-- 📊 Progress tracking during token creation
-- 🔗 Direct links to Solana Explorer
-- 📱 Mobile-friendly design
-
-### CLI Version
-- 🎨 Create SPL tokens with custom images and metadata
-- 🔐 Support for wallet.json or default Solana CLI wallet
-- 🎯 Optional vanity address generation
-- 🌐 Works on devnet and mainnet
-- 💰 **No service fees** - only pay standard Solana network costs
-- 📝 Base58 private key conversion utility
-
----
-
-## 🚀 Quick Start - Web Version
+## 🚀 Quick Start
 
 ### Installation
 
 ```bash
-git clone https://github.com/juliuspleunes4/mintly-cli.git
-cd mintly-cli
+git clone https://github.com/juliuspleunes4/mintly.git
+cd mintly
 npm install
 ```
 
@@ -63,57 +64,66 @@ npm start
 
 Then open your browser and navigate to: **http://localhost:3000**
 
-### Using the Web Interface
+### How to Create Your Token
 
-1. **Connect Your Wallet** - Click "Connect Wallet" and approve the connection in Phantom or Solflare
-2. **Select Network** - Choose Devnet (testing) or Mainnet (production)
-3. **Enter Token Details** - Fill in your token name, symbol, description, etc.
-4. **Upload Image** - Drag & drop or click to upload your token image (PNG/JPG, 512x512px recommended)
-5. **Add Attributes** (optional) - Add custom metadata attributes
-6. **Create Token** - Click "Create Token" and approve the transaction in your wallet
-7. **Done!** - View your token on Solana Explorer and in your wallet
+1. **🔌 Connect Your Wallet**
+   - Click "Connect Wallet" button
+   - Approve the connection in your Phantom or Solflare wallet
+   - Your balance will be displayed automatically
 
-### Requirements for Web Version
+2. **🌐 Choose Your Network**
+   - **Devnet** - Free testing environment (recommended for first-time users)
+   - **Mainnet** - Production environment for real tokens
 
-- **Browser Wallet**: Install [Phantom](https://phantom.app) or [Solflare](https://solflare.com)
-- **SOL Balance**: Ensure you have SOL in your connected wallet
-  - Devnet: Get free SOL from [faucet.solana.com](https://faucet.solana.com)
-  - Mainnet: Purchase SOL from an exchange
+3. **📝 Fill in Token Details**
+   - **Name** - Your token's full name (e.g., "Awesome Token")
+   - **Symbol** - Ticker symbol (e.g., "AWE")
+   - **Description** - What your token represents
+   - **Decimals** - Usually 9 (standard for Solana tokens)
+   - **Mint Amount** - Total supply to create
+
+4. **🖼️ Upload Your Token Image**
+   - Drag & drop or click to browse
+   - Recommended: 512x512px PNG or JPG
+   - Preview appears instantly
+
+5. **✨ Add Custom Attributes** (Optional)
+   - Add metadata like "Category", "Type", etc.
+   - Great for NFT-style tokens
+
+6. **🚀 Create Your Token**
+   - Click "Create Token" button
+   - Approve the transaction in your wallet
+   - Watch the progress in real-time
+
+7. **🎉 View Your Token**
+   - Get your mint address
+   - View on Solana Explorer
+   - Token appears in your wallet automatically
+
+### What You'll Need
+
+- **Wallet Extension**: [Phantom](https://phantom.app) or [Solflare](https://solflare.com)
+- **SOL for Fees**: 
+  - Devnet: Free SOL from [faucet.solana.com](https://faucet.solana.com)
+  - Mainnet: ~0.01-0.02 SOL for token creation + ~0.001 SOL for metadata
 
 ---
 
-## 💻 CLI Version (Original)
+## 💻 Advanced: CLI Tools
 
-The original CLI functionality is still available! Perfect for automation and scripting.
+<details>
+<summary><strong>For developers who need automation or scripting</strong> (Click to expand)</summary>
 
-### Prerequisites
+### CLI Prerequisites
 
 - [Node.js](https://nodejs.org/) (v18 or higher)
-- [Solana CLI tools](https://solana.com/docs/intro/installation)
-- SOL in your wallet for transaction fees
+- [Solana CLI tools](https://solana.com/docs/intro/installation) (optional)
+- Server wallet configuration (for backend token minting)
 
-### Wallet Setup
+> **Note:** The CLI uses a server-side wallet (wallet.json or default Solana keypair), not your browser wallet. This is only needed if you're running the server yourself or using CLI commands.
 
-You have two options for wallet configuration:
-
-**Option 1: Use Default Solana CLI Wallet**
-- The tool will automatically use your [default Solana wallet](https://solana.com/docs/intro/installation#create-wallet)
-
-**Option 2: Use Custom Wallet (wallet.json)**
-
-If you have a base58-encoded private key (from Phantom, Solflare, etc.):
-
-1. Open `convert-key.js`
-2. Replace `'EXAMPLE_BASE58_PRIVATE_KEY_HERE'` with your actual base58 private key
-3. Run the conversion:
-   ```bash
-   node convert-key.js
-   ```
-4. This will automatically create `src/wallet.json` with your wallet
-
-### Step-by-Step CLI Usage
-
-#### Step 1: Configure Token Metadata
+### Step 1: Configure Token Metadata
 
 Edit `src/token-metadata.json` with your token details:
 
@@ -147,12 +157,9 @@ Edit `src/token-metadata.json` with your token details:
 
 ### Step 2: Add Your Token Image
 
-Replace `src/image.png` with your token image:
-- **Recommended size:** 512x512px
-- **Format:** PNG or JPG
-- **Keep the filename as:** `image.png`
+Place your token image at `src/image.png` (512x512px PNG or JPG recommended)
 
-#### Step 3: Create Your Token
+### Step 3: Create Your Token
 
 ```bash
 npm run mint
@@ -165,71 +172,56 @@ This will:
 4. Transfer the specified amount to your wallet
 5. Return your token's mint address
 
----
-
-## 🛠️ Additional CLI Commands
-
-### Upload Metadata Only
+### Other CLI Commands
 
 ```bash
-npm run upload
+npm run upload        # Upload metadata only
+npm run convert-key   # Convert base58 private key to wallet.json
+npm run dev          # Start server with auto-reload
 ```
 
-### Convert Base58 Private Key
+</details>---
 
-```bash
-npm run convert-key
-```
+## 🔌 Technical: API Endpoints
 
-### Development Mode (Web)
+For developers integrating Mintly into other applications:
 
-```bash
-npm run dev
-```
-
-Starts the server with auto-reload on file changes.
-
----
-
-## 🌐 API Endpoints
-
-The web server exposes the following endpoints:
-
-- `GET /` - Web interface
-- `POST /api/mint-token` - Create a new token (multipart/form-data)
-- `GET /api/health` - Health check
+- `GET /` - Main web interface
+- `POST /api/mint-token` - Token creation endpoint (multipart/form-data)
+- `GET /api/health` - Server health check
 
 ---
 
 ## 📁 Project Structure
 
 ```
-mintly-cli/
-├── public/              # Web interface files
-│   ├── index.html      # Main web page
+mintly/
+├── server.js           # 🌐 Express web server (main entry point)
+├── public/              # 🎨 Web interface
+│   ├── index.html      #    Main application page
 │   ├── css/
-│   │   └── style.css   # Styles
+│   │   └── style.css   #    Modern UI styles
 │   └── js/
-│       └── app.js      # Client-side JavaScript
-├── src/                # CLI source files
+│       └── app.js      #    Client-side logic & wallet integration
+├── src/                # 🛠️ CLI tools (for advanced users)
 │   ├── mint-token-with-metadata.js
 │   ├── upload-image-and-metadata.js
 │   ├── token-metadata.json
 │   └── image.png
-├── server.js           # Express web server
-├── convert-key.js      # Key conversion utility
+├── convert-key.js      # 🔑 Wallet key conversion utility
 ├── package.json
 └── README.md
 ```
 
 ---
 
-## 🔒 Security Notes
+## 🔒 Security & Privacy
 
-- **Never commit wallet.json or private keys to version control**
-- **Use devnet for testing before deploying to mainnet**
-- **Keep secure backups of your wallet files and private keys**
-- **The web interface connects to YOUR wallet - we never have access to your keys**
+- **Your keys, your tokens** - The web app connects directly to YOUR browser wallet
+- **No key storage** - We never see or store your private keys
+- **Test first** - Always use devnet for testing before mainnet
+- **Open source** - All code is public and auditable
+- **Server wallet** - Only needed if self-hosting (for backend operations)
 
 ## 🤝 Contributing
 
@@ -246,16 +238,22 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 This project is a fork of [create-solana-token-with-metadata](https://github.com/Woody4618/create-solana-token-with-metadata) by [Woody4618](https://github.com/Woody4618). Special thanks to the original creator for the foundation of this tool.
 
-## 🔗 Links
+## 🔗 Links & Resources
 
-- **Website:** [www.mintly.cc](https://www.mintly.cc)
-- **GitHub:** [github.com/juliuspleunes4/mintly-cli](https://github.com/juliuspleunes4/mintly-cli)
-- **Original Project:** [github.com/Woody4618/create-solana-token-with-metadata](https://github.com/Woody4618/create-solana-token-with-metadata)
+- **🌐 Live Demo:** [www.mintly.cc](https://www.mintly.cc)
+- **📦 GitHub:** [github.com/juliuspleunes4/mintly-cli](https://github.com/juliuspleunes4/mintly-cli)
+- **🐛 Report Issues:** [github.com/juliuspleunes4/mintly-cli/issues](https://github.com/juliuspleunes4/mintly-cli/issues)
+- **📖 Solana Docs:** [solana.com/docs](https://solana.com/docs)
+- **👏 Original CLI:** [Woody4618's create-solana-token-with-metadata](https://github.com/Woody4618/create-solana-token-with-metadata)
 
 ---
 
 <div align="center">
 
-Made with ❤️ by the Mintly team
+### Made with ❤️ by the Mintly team
+
+**Start creating your Solana tokens today - no coding required!**
+
+[Get Started](http://localhost:3000) • [Documentation](https://github.com/juliuspleunes4/mintly-cli) • [Support](https://github.com/juliuspleunes4/mintly-cli/issues)
 
 </div>
