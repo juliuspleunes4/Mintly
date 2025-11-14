@@ -13,15 +13,12 @@ function CLI() {
 
   return (
     <div className="cli-page">
-      <Dither
-        waveColor={[0.4, 0.2, 0.6]}
-        waveSpeed={0.05}
-        waveFrequency={3}
-        waveAmplitude={0.3}
-        colorNum={4}
-        pixelSize={2}
-        enableMouseInteraction={true}
-        mouseRadius={1.5}
+      <Silk
+        speed={5}
+        scale={1}
+        color="#7000FA"
+        noiseIntensity={1.5}
+        rotation={0}
       />
       
       <Navbar />
