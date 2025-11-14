@@ -48,3 +48,6 @@ next-env.d.ts
 # Mintly - ignore sensitive wallet and token files
 src/wallet.json
 src/token-mint-address.json
+
+# Mintly Web - uploads directory
+uploads/

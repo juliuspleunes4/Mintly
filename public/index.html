@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🪙 Mintly - Create Solana SPL Tokens</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🪙 Mintly</h1>
+            <p class="subtitle">Create Solana SPL Tokens with Metadata</p>
+            <button id="connectWallet" class="btn btn-primary">
+                Connect Wallet
+            </button>
+            <div id="walletInfo" class="wallet-info" style="display: none;">
+                <p>Connected: <span id="walletAddress"></span></p>
+                <p>Balance: <span id="walletBalance"></span> SOL</p>
+            </div>
+        </header>
+
+        <!-- Main Form -->
+        <main class="main-content">
+            <form id="tokenForm" class="token-form">
+                <!-- Network Selection -->
+                <div class="form-section">
+                    <h2>Network</h2>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="network" value="devnet" checked>
+                            <span>Devnet (Testing)</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="network" value="mainnet-beta">
+                            <span>Mainnet (Production)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Token Details -->
+                <div class="form-section">
+                    <h2>Token Details</h2>
+                    <div class="form-group">
+                        <label for="tokenName">Token Name *</label>
+                        <input type="text" id="tokenName" name="name" placeholder="e.g., Dishwasher Token" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tokenSymbol">Token Symbol *</label>
+                        <input type="text" id="tokenSymbol" name="symbol" placeholder="e.g., DISH" maxlength="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tokenDescription">Description</label>
+                        <textarea id="tokenDescription" name="description" rows="3" placeholder="Describe your token..."></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tokenDecimals">Decimals *</label>
+                            <input type="number" id="tokenDecimals" name="decimals" value="9" min="0" max="9" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="mintAmount">Mint Amount *</label>
+                            <input type="number" id="mintAmount" name="mintAmount" value="1000000" min="1" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="form-section">
+                    <h2>Token Image</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="tokenImage" name="image" accept="image/png,image/jpeg" required hidden>
+                        <div class="upload-placeholder" id="uploadPlaceholder">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            <p>Click to upload token image</p>
+                            <p class="upload-hint">PNG or JPG (Recommended: 512x512px)</p>
+                        </div>
+                        <div class="image-preview" id="imagePreview" style="display: none;">
+                            <img id="previewImage" src="" alt="Token preview">
+                            <button type="button" class="btn-remove" id="removeImage">Remove</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attributes (Optional) -->
+                <div class="form-section">
+                    <h2>Attributes (Optional)</h2>
+                    <div id="attributesContainer">
+                        <div class="attribute-row">
+                            <input type="text" class="attr-key" placeholder="Trait Type">
+                            <input type="text" class="attr-value" placeholder="Value">
+                            <button type="button" class="btn-icon btn-remove-attr">×</button>
+                        </div>
+                    </div>
+                    <button type="button" id="addAttribute" class="btn btn-secondary">+ Add Attribute</button>
+                </div>
+
+                <!-- Submit -->
+                <div class="form-section">
+                    <button type="submit" id="submitBtn" class="btn btn-success btn-large" disabled>
+                        Create Token
+                    </button>
+                </div>
+            </form>
+
+            <!-- Progress Section -->
+            <div id="progressSection" class="progress-section" style="display: none;">
+                <h2>Creating Your Token...</h2>
+                <div class="progress-bar">
+                    <div id="progressBar" class="progress-fill"></div>
+                </div>
+                <ul id="progressSteps" class="progress-steps"></ul>
+            </div>
+
+            <!-- Result Section -->
+            <div id="resultSection" class="result-section" style="display: none;">
+                <h2>✅ Token Created Successfully!</h2>
+                <div class="result-details">
+                    <div class="result-item">
+                        <strong>Token Name:</strong>
+                        <span id="resultName"></span>
+                    </div>
+                    <div class="result-item">
+                        <strong>Token Symbol:</strong>
+                        <span id="resultSymbol"></span>
+                    </div>
+                    <div class="result-item">
+                        <strong>Mint Address:</strong>
+                        <code id="resultMint"></code>
+                        <button class="btn-icon" onclick="copyToClipboard('resultMint')">📋</button>
+                    </div>
+                    <div class="result-item">
+                        <strong>Metadata URI:</strong>
+                        <a id="resultMetadata" href="#" target="_blank">View Metadata</a>
+                    </div>
+                    <div class="result-item">
+                        <strong>Explorer:</strong>
+                        <a id="resultExplorer" href="#" target="_blank">View on Solana Explorer</a>
+                    </div>
+                </div>
+                <button id="createAnother" class="btn btn-primary">Create Another Token</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Made with ❤️ by the Mintly team</p>
+            <p>
+                <a href="https://github.com/juliuspleunes4/mintly-cli" target="_blank">GitHub</a> •
+                <a href="https://www.mintly.cc" target="_blank">Website</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="/js/app.js" type="module"></script>
+</body>
+</html>
