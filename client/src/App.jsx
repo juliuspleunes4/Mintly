@@ -123,12 +123,13 @@ function App() {
   const fetchBalance = async (publicKey) => {
     console.log('💰 Fetching balance for:', publicKey.toString());
     try {
-      // Try multiple RPC endpoints in order
+      // Try multiple RPC endpoints in order (free public endpoints)
       const rpcEndpoints = [
-        'https://solana-mainnet.g.alchemy.com/v2/demo',
-        'https://rpc.ankr.com/solana',
-        'https://solana-api.projectserum.com',
-        window.solanaWeb3.clusterApiUrl('mainnet-beta')
+        'https://api.mainnet-beta.solana.com',
+        'https://solana-mainnet.rpc.extrnode.com',
+        'https://mainnet.helius-rpc.com/?api-key=public',
+        'https://solana.public-rpc.com',
+        'https://rpc.solanatracker.io'
       ];
       
       for (let i = 0; i < rpcEndpoints.length; i++) {
