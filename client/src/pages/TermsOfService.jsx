@@ -1,20 +1,19 @@
 import { Link } from 'react-router-dom';
-import Dither from '../components/Dither';
+import Navbar from '../components/Navbar';
+import Silk from '../components/Silk';
 import Footer from '../components/Footer';
 import '../App.css';
 
 function TermsOfService() {
   return (
     <div className="app">
-      <Dither
-        waveColor={[0.4, 0.2, 0.6]}
-        waveSpeed={0.05}
-        waveFrequency={3}
-        waveAmplitude={0.3}
-        colorNum={4}
-        pixelSize={2}
-        enableMouseInteraction={false}
-        mouseRadius={1}
+      <Navbar />
+      <Silk
+        speed={5}
+        scale={1}
+        color="#7000FA"
+        noiseIntensity={1.5}
+        rotation={0}
       />
       <div className="container">
         <div className="card">
@@ -61,9 +60,9 @@ function TermsOfService() {
             <h2>3. Service Fees</h2>
             <p>The current fee structure is:</p>
             <ul>
-              <li><strong>Total Cost: 0.2 SOL</strong></li>
-              <li>Service Fee: 0.1 SOL (paid to Mintly)</li>
-              <li>Blockchain Costs: ~0.1 SOL (rent, storage, transaction fees)</li>
+              <li><strong>Total Cost: 0.2 SOL (€23.75)</strong></li>
+              <li>Service Fee: 0.1 SOL (€11.88) (paid to Mintly)</li>
+              <li>Blockchain Costs: ~0.1 SOL (€11.88) (rent, storage, transaction fees)</li>
             </ul>
             <p>
               <strong>All fees are NON-REFUNDABLE</strong>, even if token creation fails or encounters errors.

@@ -1,20 +1,19 @@
 import { Link } from 'react-router-dom';
-import Dither from '../components/Dither';
+import Navbar from '../components/Navbar';
+import Silk from '../components/Silk';
 import Footer from '../components/Footer';
 import '../App.css';
 
 function PrivacyPolicy() {
   return (
     <div className="app">
-      <Dither
-        waveColor={[0.4, 0.2, 0.6]}
-        waveSpeed={0.05}
-        waveFrequency={3}
-        waveAmplitude={0.3}
-        colorNum={4}
-        pixelSize={2}
-        enableMouseInteraction={false}
-        mouseRadius={1}
+      <Navbar />
+      <Silk
+        speed={5}
+        scale={1}
+        color="#7000FA"
+        noiseIntensity={1.5}
+        rotation={0}
       />
       <div className="container">
         <div className="card">
