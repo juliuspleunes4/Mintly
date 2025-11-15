@@ -1,11 +1,18 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Silk from '../components/Silk';
 import Footer from '../components/Footer';
 import './Home.css';
 
 function Home() {
+  const [openFaq, setOpenFaq] = useState(null);
+
+  const toggleFaq = (index) => {
+    setOpenFaq(openFaq === index ? null : index);
+  };
+
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
@@ -230,29 +237,110 @@ function Home() {
         >
           <motion.h2 variants={fadeInUp}>Frequently Asked Questions</motion.h2>
           <motion.div className="faq-container" variants={stagger}>
-            <motion.div className="faq-item" variants={fadeInUp}>
-              <h3>Do I need coding experience?</h3>
-              <p>No! The web version requires zero coding knowledge. Just connect your wallet, fill out a form, and create your token. For developers, we also offer a CLI tool.</p>
+            <motion.div 
+              className={`faq-item ${openFaq === 0 ? 'active' : ''}`} 
+              variants={fadeInUp}
+              onClick={() => toggleFaq(0)}
+            >
+              <h3>
+                <span className="faq-question">
+                  Why is there a service fee on the web version?
+                </span>
+                <span className="faq-toggle">{openFaq === 0 ? '−' : '+'}</span>
+              </h3>
+              {openFaq === 0 && (
+                <p>The 0.1 SOL service fee covers the Irys/Arweave storage costs for your token's image and metadata. Because this is a serverless web application, we can't securely expose our funded wallet's private key to your browser. Instead, our backend server uses a pre-funded wallet to upload your data to Irys on your behalf. While the actual Irys cost is very small (~0.02-0.05 SOL), the service fee also covers hosting, maintenance, and the convenience of not having to run the CLI yourself. CLI users pay only the minimal Irys cost directly from their own wallet.</p>
+              )}
             </motion.div>
-            <motion.div className="faq-item" variants={fadeInUp}>
-              <h3>Is my wallet safe?</h3>
-              <p>Absolutely. We never see or store your private keys. Mintly connects directly to your browser wallet (Phantom/Solflare), and all transactions are signed locally on your device.</p>
+            <motion.div 
+              className={`faq-item ${openFaq === 1 ? 'active' : ''}`} 
+              variants={fadeInUp}
+              onClick={() => toggleFaq(1)}
+            >
+              <h3>
+                <span className="faq-question">
+                  Do I need coding experience?
+                </span>
+                <span className="faq-toggle">{openFaq === 1 ? '−' : '+'}</span>
+              </h3>
+              {openFaq === 1 && (
+                <p>No! The web version requires zero coding knowledge. Just connect your wallet, fill out a form, and create your token. For developers, we also offer a CLI tool.</p>
+              )}
             </motion.div>
-            <motion.div className="faq-item" variants={fadeInUp}>
-              <h3>Where is my token metadata stored?</h3>
-              <p>Your token image and metadata are uploaded to Arweave via Irys, ensuring permanent, decentralized storage that can never be taken down or modified.</p>
+            <motion.div 
+              className={`faq-item ${openFaq === 2 ? 'active' : ''}`} 
+              variants={fadeInUp}
+              onClick={() => toggleFaq(2)}
+            >
+              <h3>
+                <span className="faq-question">
+                  Is my wallet safe?
+                </span>
+                <span className="faq-toggle">{openFaq === 2 ? '−' : '+'}</span>
+              </h3>
+              {openFaq === 2 && (
+                <p>Absolutely. We never see or store your private keys. Mintly connects directly to your browser wallet (Phantom/Solflare), and all transactions are signed locally on your device.</p>
+              )}
             </motion.div>
-            <motion.div className="faq-item" variants={fadeInUp}>
-              <h3>Can I create tokens on devnet for testing?</h3>
-              <p>Currently, Mintly only supports mainnet to ensure real value transactions. For testing, use the CLI version with devnet configuration.</p>
+            <motion.div 
+              className={`faq-item ${openFaq === 3 ? 'active' : ''}`} 
+              variants={fadeInUp}
+              onClick={() => toggleFaq(3)}
+            >
+              <h3>
+                <span className="faq-question">
+                  Where is my token metadata stored?
+                </span>
+                <span className="faq-toggle">{openFaq === 3 ? '−' : '+'}</span>
+              </h3>
+              {openFaq === 3 && (
+                <p>Your token image and metadata are uploaded to Arweave via Irys, ensuring permanent, decentralized storage that can never be taken down or modified.</p>
+              )}
             </motion.div>
-            <motion.div className="faq-item" variants={fadeInUp}>
-              <h3>What if my transaction fails?</h3>
-              <p>If a transaction fails, you'll see a clear error message. Fees are only charged for successful transactions. Our Terms of Service cover edge cases and liability.</p>
+            <motion.div 
+              className={`faq-item ${openFaq === 4 ? 'active' : ''}`} 
+              variants={fadeInUp}
+              onClick={() => toggleFaq(4)}
+            >
+              <h3>
+                <span className="faq-question">
+                  Can I create tokens on devnet for testing?
+                </span>
+                <span className="faq-toggle">{openFaq === 4 ? '−' : '+'}</span>
+              </h3>
+              {openFaq === 4 && (
+                <p>Currently, Mintly only supports mainnet to ensure real value transactions. For testing, use the CLI version with devnet configuration.</p>
+              )}
             </motion.div>
-            <motion.div className="faq-item" variants={fadeInUp}>
-              <h3>Can I mint more tokens later?</h3>
-              <p>Yes! You maintain full mint authority over your token. You can mint additional supply anytime using Solana tools or by creating another batch through Mintly.</p>
+            <motion.div 
+              className={`faq-item ${openFaq === 5 ? 'active' : ''}`} 
+              variants={fadeInUp}
+              onClick={() => toggleFaq(5)}
+            >
+              <h3>
+                <span className="faq-question">
+                  What if my transaction fails?
+                </span>
+                <span className="faq-toggle">{openFaq === 5 ? '−' : '+'}</span>
+              </h3>
+              {openFaq === 5 && (
+                <p>If a transaction fails, you'll see a clear error message. Fees are only charged for successful transactions. Our Terms of Service cover edge cases and liability.</p>
+              )}
+            </motion.div>
+            <motion.div 
+              className={`faq-item ${openFaq === 6 ? 'active' : ''}`} 
+              variants={fadeInUp}
+              onClick={() => toggleFaq(6)}
+            >
+              <h3>
+                <span className="faq-question">
+                  Can I mint more tokens later?
+                </span>
+                <span className="faq-toggle">{openFaq === 6 ? '−' : '+'}</span>
+              </h3>
+              {openFaq === 6 && (
+                <p>Yes! You maintain full mint authority over your token. You can mint additional supply anytime using Solana tools or by creating another batch through Mintly.</p>
+              )}
             </motion.div>
           </motion.div>
         </motion.section>

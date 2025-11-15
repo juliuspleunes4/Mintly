@@ -65,6 +65,30 @@ function CLI() {
           viewport={{ once: true }}
           variants={fadeInUp}
         >
+          <div className="content-card">
+            <h2>Why Is the CLI Version Cheaper?</h2>
+            <p>
+              The CLI version eliminates the 0.1 SOL service fee because you're running everything locally 
+              with your own wallet. In the web version, we use a pre-funded backend wallet to upload your 
+              token's image and metadata to Irys/Arweave, which requires the service fee to cover these costs 
+              and maintain the hosted service.
+            </p>
+            <p>
+              With the CLI, you handle the Irys upload directly from your machine using your own wallet. 
+              The actual Irys storage cost is minimal (~0.02-0.05 SOL), so you only pay that plus the 
+              standard blockchain costs for creating the token (~0.05-0.08 SOL). This makes the CLI 
+              perfect for developers who want maximum cost efficiency and don't mind using the command line.
+            </p>
+          </div>
+        </motion.section>
+
+        <motion.section 
+          className="section"
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true }}
+          variants={fadeInUp}
+        >
           <h2>Key Benefits</h2>
           <div className="benefits-grid">
             <div className="benefit-card">
