@@ -1,3 +1,2 @@
-# Override GitHub language statistics to show only JavaScript
-*.html linguist-vendored
-*.css linguist-vendored
+# Set TypeScript as only language for GitHub Linguist
+* linguist-language=TypeScript
